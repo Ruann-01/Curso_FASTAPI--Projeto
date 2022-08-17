@@ -4,7 +4,7 @@ from turtle import title
 from typing import List, Optional
 
 from fastapi.responses import JSONResponse
-from fastapi import Path, Query, Response
+from fastapi import Path, Query, Response, Header
 
 from fastapi import FastAPI
 from fastapi import HTTPException
@@ -70,11 +70,12 @@ async def delete_curso(curso_id: int):
             status_code = status.HTTP_404_NOT_FOUND, detail=f'Não existe curso com o ID {curso_id}')  
 
 @app.get('/calculadora')
-async def calcular(a: int = Query(default=None, gt=5), b: int = Query(default=None, gt=10), c: Optional[int] = None):
+async def calcular(a: int = Query(default=None, gt=5), b: int = Query(default=None, gt=10), x_geek: str = Header(default=None), c: Optional[int] = None):
     soma: int = a+b
     if c:
         soma += c
-
+        
+    print(f'X-GEEK: {x_geek}')
     return {"resultado": soma}
 
 if __name__ == '__main__':
