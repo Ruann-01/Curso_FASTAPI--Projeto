@@ -1,7 +1,10 @@
+from email.policy import default
+from operator import gt, lt
+from turtle import title
 from typing import List, Optional
 
-from fastapi import Response
 from fastapi.responses import JSONResponse
+from fastapi import Path, Query, Response
 
 from fastapi import FastAPI
 from fastapi import HTTPException
@@ -28,7 +31,8 @@ async def get_cursos():
     return cursos
 
 @app.get('/cursos/{curso_id}')
-async def get_cursos(curso_id: int):
+async def get_cursos(curso_id: int = Path(
+    default = None, title='ID do curso', description='Deve ser entre 1 e 2', gt=0, lt=3)):
     try:
         curso = cursos[curso_id]
         return curso
@@ -64,6 +68,14 @@ async def delete_curso(curso_id: int):
     else:
          raise HTTPException(
             status_code = status.HTTP_404_NOT_FOUND, detail=f'Não existe curso com o ID {curso_id}')  
+
+@app.get('/calculadora')
+async def calcular(a: int = Query(default=None, gt=5), b: int = Query(default=None, gt=10), c: Optional[int] = None):
+    soma: int = a+b
+    if c:
+        soma += c
+
+    return {"resultado": soma}
 
 if __name__ == '__main__':
     import uvicorn 
