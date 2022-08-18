@@ -1,15 +1,25 @@
 from email.policy import default
 from operator import gt, lt
 from turtle import title
-from typing import List, Optional
+from typing import List, Optional, Any
 
 from fastapi.responses import JSONResponse
-from fastapi import Path, Query, Response, Header
+from fastapi import Path, Query, Response, Header, Depends
 
+from time import sleep
 from fastapi import FastAPI
 from fastapi import HTTPException
 from fastapi import status
 from models import Curso
+
+def fake_db():
+    try:
+        print('Abrindo conexões com banco de dados...')
+        sleep(1)
+    finally:
+        print('Fechando conexão com o banco de dados...')
+        sleep(1)
+
 
 app = FastAPI()
 
@@ -27,7 +37,7 @@ cursos = {
 }
 
 @app.get('/cursos')
-async def get_cursos():
+async def get_cursos(db: Any = Depends(fake_db)):
     return cursos
 
 @app.get('/cursos/{curso_id}')
