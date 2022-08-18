@@ -75,6 +75,7 @@ async def calcular(a: int = Query(default=None, gt=5), b: int = Query(default=No
     if c:
         soma += c
         
+    
     print(f'X-GEEK: {x_geek}')
     return {"resultado": soma}
 
