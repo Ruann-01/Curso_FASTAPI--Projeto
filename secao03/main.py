@@ -29,7 +29,8 @@ app = FastAPI(title = 'Api de Curso de FastAPI',
 
 @app.get('/cursos', description = 'Retorna todos os cursos ou uma lista vazia.', 
         summary = 'Retorna todos os cursos.',
-        response_model = List[Curso], response_description = 'Cursos encontrados com sucesso.')
+        response_model = List[Curso], 
+        response_description = 'Cursos encontrados com sucesso.')
 async def get_cursos(db: Any = Depends(fake_db)):
     return cursos
 
