@@ -1,7 +1,8 @@
 from email.policy import default
+from ensurepip import version
 from operator import gt, lt
 from turtle import title
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Dict
 
 from fastapi.responses import JSONResponse
 from fastapi import Path, Query, Response, Header, Depends
@@ -10,7 +11,7 @@ from time import sleep
 from fastapi import FastAPI
 from fastapi import HTTPException
 from fastapi import status
-from models import Curso
+from models import Curso, cursos
 
 def fake_db():
     try:
@@ -21,22 +22,14 @@ def fake_db():
         sleep(1)
 
 
-app = FastAPI()
+app = FastAPI(title = 'Api de Curso de FastAPI', 
+    version = 0.01,
+    description = 'Uma API para estudo de FastAPI'
+)
 
-cursos = {
-    1:{
-        "titulo": "Programação",
-        "aulas": 110,
-        "horas":58
-    },
-    2:{
-        "titulo": "Data Science",
-        "aulas": 112,
-        "horas":54
-    }
-}
-
-@app.get('/cursos')
+@app.get('/cursos', description = 'Retorna todos os cursos ou uma lista vazia.', 
+        summary = 'Retorna todos os cursos.',
+        response_model = List[Curso], response_description = 'Cursos encontrados com sucesso.')
 async def get_cursos(db: Any = Depends(fake_db)):
     return cursos
 
@@ -50,7 +43,7 @@ async def get_cursos(curso_id: int = Path(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail='Curso não encontrado.')
 
-@app.post('/cursos', status_code= status.HTTP_201_CREATED)
+@app.post('/cursos', status_code= status.HTTP_201_CREATED, response_model = Curso)
 async def post_curso(curso: Curso):
     next_id: int = len(cursos) + 1
     cursos[next_id] = curso
