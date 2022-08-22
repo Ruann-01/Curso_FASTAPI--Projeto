@@ -47,8 +47,9 @@ async def get_cursos(curso_id: int = Path(
 @app.post('/cursos', status_code= status.HTTP_201_CREATED, response_model = Curso)
 async def post_curso(curso: Curso):
     next_id: int = len(cursos) + 1
-    cursos[next_id] = curso
-    del curso.id
+    curso.id = next_id
+    cursos.append(curso)
+
     return curso
 
 @app.put('/cursos/{curso_id}')
